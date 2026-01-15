@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organic OS - Complete Project Management System</title>
+    <meta name="description"
+        content="756+ items, 6000+ tasks. Checklists, Formulations, Foundational Beliefs, Emotions, Sensory Dimensions.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0c10;
+            --sidebar: rgba(15, 18, 24, 0.95);
+            --card: rgba(22, 27, 34, 0.8);
+            --accent: #3b82f6;
+            --green: #10b981;
+            --purple: #8b5cf6;
+            --orange: #f59e0b;
+            --pink: #ec4899;
+            --red: #ef4444;
+            --cyan: #06b6d4;
+            --text: #e6edf3;
+            --muted: #848d97;
+            --border: rgba(255, 255, 255, 0.1)
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0
+        }
+
+        .logo {
+            padding: 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .nav-section {
+            padding: 6px;
+            flex: 1;
+            overflow-y: auto
+        }
+
+        .nav-label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 10px 10px 4px;
+            letter-spacing: 1px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            color: var(--muted);
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 1px;
+            transition: all 0.2s;
+            font-size: 0.85rem
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--text)
+        }
+
+        .nav-item.active {
+            background: var(--accent);
+            color: white
+        }
+
+        .nav-count {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 7px;
+            border-radius: 8px;
+            font-size: 0.65rem
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden
+        }
+
+        .header {
+            height: 58px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.3)
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative
+        }
+
+        .search-box input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px 9px 34px;
+            color: white;
+            font-size: 0.85rem
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent)
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 16px;
+            margin-left: auto
+        }
+
+        .stat {
+            text-align: center
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700
+        }
+
+        .stat-label {
+            font-size: 0.6rem;
+            color: var(--muted);
+            text-transform: uppercase
+        }
+
+        .content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700
+        }
+
+        .section-count {
+            color: var(--muted);
+            font-size: 0.85rem
+        }
+
+        .filters {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            flex-wrap: wrap
+        }
+
+        .filter-btn {
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.75rem
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.3s
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.2)
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            gap: 8px
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            line-height: 1.3
+        }
+
+        .card-cat {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+            white-space: nowrap
+        }
+
+        .cat-checklist {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981
+        }
+
+        .cat-formulation {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6
+        }
+
+        .cat-belief {
+            background: rgba(236, 72, 153, 0.2);
+            color: #ec4899
+        }
+
+        .cat-emotion {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444
+        }
+
+        .cat-sense {
+            background: rgba(6, 182, 212, 0.2);
+            color: #06b6d4
+        }
+
+        .card-desc {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden
+        }
+
+        .card-tags {
+            font-size: 0.7rem;
+            color: var(--accent);
+            margin-bottom: 8px
+        }
+
+        .card-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        .card-progress-bar {
+            height: 100%;
+            background: var(--green);
+            transition: width 0.3s
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.65rem;
+            color: var(--muted)
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px
+        }
+
+        .modal {
+            background: #161b22;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 0 6px
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1
+        }
+
+        .checklist {
+            list-style: none
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none
+        }
+
+        .check-box {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            margin-top: 2px
+        }
+
+        .check-box.checked {
+            background: var(--green);
+            border-color: var(--green)
+        }
+
+        .check-box.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 10px
+        }
+
+        .check-text {
+            flex: 1;
+            line-height: 1.4;
+            font-size: 0.85rem
+        }
+
+        .check-text.done {
+            text-decoration: line-through;
+            color: var(--muted)
+        }
+
+        .check-section {
+            font-size: 0.7rem;
+            color: var(--accent);
+            margin-top: 4px
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #161b22;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            margin-top: 4px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5)
+        }
+
+        .search-result {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer
+        }
+
+        .search-result:hover {
+            background: rgba(255, 255, 255, 0.05)
+        }
+
+        .sr-cat {
+            font-size: 0.6rem;
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase
+        }
+
+        .sr-title {
+            font-size: 0.85rem
+        }
+
+        .sr-desc {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .recipe-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px
+        }
+
+        .recipe-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--purple)
+        }
+
+        .recipe-ing {
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.5
+        }
+
+        .section-group {
+            margin-bottom: 20px
+        }
+
+        .section-group-title {
+            font-weight: 600;
+            color: var(--pink);
+            margin-bottom: 8px;
+            font-size: 0.95rem
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">🧬 ORGANIC OS</div>
+        <div class="nav-section">
+            <div class="nav-label">Overview</div>
+            <div class="nav-item active" data-view="dashboard">📊 Dashboard <span class="nav-count" id="cAll">756</span>
+            </div>
+            <div class="nav-item" data-view="progress">📈 In Progress <span class="nav-count" id="cProg">0</span></div>
+            <div class="nav-label">Content Library</div>
+            <div class="nav-item" data-view="checklists">✅ Checklists <span class="nav-count" id="cChklist">128</span>
+            </div>
+            <div class="nav-item" data-view="formulations">🧪 Formulations <span class="nav-count" id="cForm">98</span>
+            </div>
+            <div class="nav-item" data-view="beliefs">💡 Beliefs <span class="nav-count" id="cBelief">75</span></div>
+            <div class="nav-item" data-view="collections">📦 Collections <span class="nav-count" id="cColl">7</span>
+            </div>
+            <div class="nav-item" data-view="emotions">❤️ Emotions <span class="nav-count" id="cEmot">117</span></div>
+            <div class="nav-item" data-view="senses">🧠 Senses <span class="nav-count" id="cSense">331</span></div>
+            <div class="nav-label">Focus Areas</div>
+            <div class="nav-item" data-view="wellness">🧘 Wellness</div>
+            <div class="nav-item" data-view="sustainability">🌱 Sustainability</div>
+            <div class="nav-item" data-view="mindset">🎯 Mindset</div>
+            <div class="nav-item" data-view="business">💼 Business</div>
+        </div>
+    </div>
+    <div class="main">
+        <header class="header">
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Search 6000+ tasks across all categories...">
+                <div class="search-results" id="searchResults"></div>
+            </div>
+            <div class="header-stats">
+                <div class="stat">
+                    <div class="stat-value" style="color:var(--green)" id="sTotal">756</div>
+                    <div class="stat-label">Items</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" style="color:var(--cyan)" id="sComplete">0</div>
+                    <div class="stat-label">Done</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" style="color:var(--orange)" id="sPercent">0%</div>
+                    <div class="stat-label">Progress</div>
+                </div>
+            </div>
+        </header>
+        <div class="content">
+            <div class="section-header">
+                <div class="section-title" id="viewTitle">Dashboard</div>
+                <div class="section-count" id="viewCount"></div>
+            </div>
+            <div class="filters" id="filters"></div>
+            <div class="grid" id="grid"></div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="mTitle"></div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="mBody"></div>
+        </div>
+    </div>
+    <script src="OrganicOS_Data.js"></script>
+    <script>
+        // ========== EMOTIONS DATA (117 items with full descriptions) ==========
+        const EMOTIONS = [
+            { id: "e1", name: "Joy", val: "positive", int: 9, fam: "joy", desc: "Pure delight and lightness when something brings genuine happiness and fulfillment.", moves: ["Savor the moment fully", "Share it with others", "Anchor what triggered it"] },
+            { id: "e2", name: "Happiness", val: "positive", int: 7, fam: "joy", desc: "A sustained sense of contentment and well-being; baseline wellbeing.", moves: ["Notice what contributes", "Repeat those patterns", "Protect this state"] },
+            { id: "e3", name: "Pleasure", val: "positive", int: 6, fam: "joy", desc: "Physical or sensory delight from touch, taste, movement, or comfort.", moves: ["Slow down to feel it", "Appreciate the senses", "Use mindfulness"] },
+            { id: "e4", name: "Delight", val: "positive", int: 8, fam: "joy", desc: "Surprised happiness; sudden joy when something unexpectedly good happens.", moves: ["Let the surprise land", "Express it openly", "Remember the feeling"] },
+            { id: "e5", name: "Excitement", val: "positive", int: 9, fam: "joy", desc: "High-energy anticipation charged with positive expectation about something coming.", moves: ["Channel into action", "Breathe through the charge", "Prepare mindfully"] },
+            { id: "e6", name: "Contentment", val: "positive", int: 5, fam: "joy", desc: "Quiet satisfaction with things as they are; peaceful sufficiency.", moves: ["Savor without needing change", "Appreciate details", "Anchor in the body"] },
+            { id: "e7", name: "Satisfaction", val: "positive", int: 7, fam: "joy", desc: "The feeling of accomplishment when effort leads to desired result.", moves: ["Acknowledge the work", "Celebrate completion", "Document success"] },
+            { id: "e8", name: "Pride", val: "positive", int: 7, fam: "joy", desc: "Dignified satisfaction from living up to your values and standards.", moves: ["Name the specific achievement", "Give others credit", "Keep it grounded"] },
+            { id: "e9", name: "Love", val: "positive", int: 9, fam: "joy", desc: "Deep affection and committed care for another; wanting their wellbeing.", moves: ["Express it clearly", "Show through action", "Strengthen the bond"] },
+            { id: "e10", name: "Tenderness", val: "positive", int: 6, fam: "joy", desc: "Soft, vulnerable affection often mixed with protectiveness and gentleness.", moves: ["Express gently", "Create safe space", "Be fully present"] },
+            { id: "e11", name: "Admiration", val: "positive", int: 7, fam: "joy", desc: "Genuine appreciation for qualities, achievements, or character in another.", moves: ["Express it directly", "Model the quality", "Celebrate their growth"] },
+            { id: "e12", name: "Gratitude", val: "positive", int: 7, fam: "joy", desc: "Warm recognition of gifts received from life, self, or others.", moves: ["Name three things", "Share appreciation directly", "Embody reciprocity"] },
+            { id: "e13", name: "Hope", val: "positive", int: 6, fam: "joy", desc: "Grounded belief that improvement or relief is possible, even amid difficulty.", moves: ["Define next step", "Review past resilience", "Take action"] },
+            { id: "e14", name: "Inspiration", val: "positive", int: 8, fam: "joy", desc: "Sudden activation by vision, beauty, or possibility that calls you forward.", moves: ["Channel into creation", "Hold the vision", "Take aligned steps"] },
+            { id: "e15", name: "Awe", val: "positive", int: 9, fam: "joy", desc: "Transcendent wonder at something vast, beautiful, or beyond usual understanding.", moves: ["Let it reshape you", "Express gratitude", "Create or move others"] },
+            { id: "e16", name: "Serenity", val: "positive", int: 5, fam: "joy", desc: "Deep calm and peace; unshakeable inner quietness.", moves: ["Protect this state", "Share peace", "Anchor it daily"] },
+            { id: "e17", name: "Relief", val: "positive", int: 6, fam: "joy", desc: "Easing of tension after threat or pressure has passed.", moves: ["Let nervous system downshift", "Note what changed", "Reflect on learning"] },
+            { id: "e18", name: "Playfulness", val: "positive", int: 6, fam: "joy", desc: "Lightness, humor, and creative engagement without serious intent.", moves: ["Engage fully", "Be spontaneous", "Laugh freely"] },
+            { id: "e19", name: "Curiosity", val: "positive", int: 5, fam: "joy", desc: "Open, investigative impulse to understand, explore, or learn more.", moves: ["Follow the question", "Ask boldly", "Stay open"] },
+            { id: "e20", name: "Enthusiasm", val: "positive", int: 8, fam: "joy", desc: "Energetic, passionate engagement with something you care about.", moves: ["Pour it into action", "Share it", "Sustain momentum"] },
+            { id: "e21", name: "Trust", val: "positive", int: 7, fam: "trust", desc: "Confident belief that someone or something is reliable, safe, and has good intent.", moves: ["Build slowly", "Communicate needs", "Repair breaches"] },
+            { id: "e22", name: "Security", val: "positive", int: 6, fam: "trust", desc: "Feeling protected and safe; absence of threat or uncertainty.", moves: ["Cultivate stability", "Create routines", "Process fears"] },
+            { id: "e23", name: "Belonging", val: "positive", int: 7, fam: "trust", desc: "Felt sense of being accepted and valued by a group or community.", moves: ["Engage authentically", "Contribute", "Deepen bonds"] },
+            { id: "e24", name: "Confidence", val: "positive", int: 7, fam: "trust", desc: "Belief in your ability to handle what comes; grounded self-assurance.", moves: ["Recall past successes", "Take small risks", "Build competence"] },
+            { id: "e25", name: "Courage", val: "positive", int: 8, fam: "trust", desc: "Ability to act despite fear; moving forward when stakes feel high.", moves: ["Define what matters", "Take the step", "Celebrate bravery"] },
+            { id: "e26", name: "Acceptance", val: "positive", int: 6, fam: "trust", desc: "Peaceful allowing of what is without struggle or demand for change.", moves: ["Release resistance", "Observe neutrally", "Find agency in response"] },
+            { id: "e27", name: "Calm", val: "positive", int: 4, fam: "trust", desc: "Settled, relaxed state where threat feels minimal.", moves: ["Slow breathing", "Relax body", "Limit stimulation"] },
+            { id: "e28", name: "Peace", val: "positive", int: 7, fam: "trust", desc: "Grounded sense that things are okay; inner and outer harmony.", moves: ["Cultivate it daily", "Protect boundaries", "Share it"] },
+            { id: "e29", name: "Fear", val: "negative", int: 9, fam: "fear", desc: "Sharp alertness to perceived danger; fight/flight/freeze response activated.", moves: ["Assess real vs imagined threat", "Ground in present", "Take protective action"] },
+            { id: "e30", name: "Anxiety", val: "negative", int: 7, fam: "fear", desc: "Restless worry focused on future possibilities rather than present danger.", moves: ["Name the fear", "Reality-check catastrophe", "Take one action"] },
+            { id: "e31", name: "Worry", val: "negative", int: 5, fam: "fear", desc: "Repetitive, concerned thinking about possible negative outcomes.", moves: ["Define scope", "Take action step", "Set worry boundary"] },
+            { id: "e32", name: "Panic", val: "negative", int: 10, fam: "fear", desc: "Overwhelming terror where nervous system hijacks and floods with activation.", moves: ["Ground senses", "Name sensations", "Slow breathing"] },
+            { id: "e33", name: "Helplessness", val: "negative", int: 7, fam: "fear", desc: "Paralyzed sense that you cannot affect or change a situation.", moves: ["Identify one small action", "Seek support", "Release what's not yours"] },
+            { id: "e34", name: "Vulnerability", val: "mixed", int: 6, fam: "fear", desc: "Exposed feeling when you lack control or have revealed yourself.", moves: ["Stay present", "Build trust gradually", "Reinforce safety"] },
+            { id: "e35", name: "Insecurity", val: "negative", int: 6, fam: "fear", desc: "Nagging doubt about your worth, abilities, or place in situations.", moves: ["Challenge self-judgment", "Build competence", "Seek reassurance"] },
+            { id: "e36", name: "Anger", val: "negative", int: 8, fam: "anger", desc: "Hot surge of protective energy when boundaries violated or needs blocked.", moves: ["Pause before responding", "Feel the heat in body", "Identify need or boundary"] },
+            { id: "e37", name: "Rage", val: "negative", int: 10, fam: "anger", desc: "Overwhelming explosive anger that eclipses judgment and seeks to destroy.", moves: ["Create physical safety", "Discharge safely", "Process later with support"] },
+            { id: "e38", name: "Irritation", val: "negative", int: 3, fam: "anger", desc: "Low-grade annoyance at something mildly bothersome.", moves: ["Name the irritant", "Adjust it if possible", "Let it pass"] },
+            { id: "e39", name: "Frustration", val: "negative", int: 6, fam: "anger", desc: "Irritation when effort meets blocked progress; wanting to hammer through.", moves: ["Adjust strategy", "Release effort", "Accept limits"] },
+            { id: "e40", name: "Resentment", val: "negative", int: 7, fam: "anger", desc: "Simmering bitterness about unfairness or repeated boundary violations.", moves: ["Communicate clearly", "Address pattern", "Release if unresolvable"] },
+            { id: "e41", name: "Contempt", val: "negative", int: 6, fam: "anger", desc: "Bitter disdain or disgust directed at someone viewed as beneath you.", moves: ["Question your judgment", "Seek to understand", "Release superiority"] },
+            { id: "e42", name: "Indignation", val: "negative", int: 7, fam: "anger", desc: "Righteous anger at injustice or affront to your dignity or values.", moves: ["Channel into action", "Clarify values", "Stand up"] },
+            { id: "e43", name: "Sadness", val: "negative", int: 6, fam: "sadness", desc: "Heavy-hearted awareness of loss, disappointment, or something meaningful changed.", moves: ["Let tears flow", "Honor what was", "Share with others"] },
+            { id: "e44", name: "Grief", val: "negative", int: 9, fam: "sadness", desc: "Deep recurring sorrow after major loss like death or relationship end.", moves: ["Allow waves", "Get support", "Remember and honor"] },
+            { id: "e45", name: "Melancholy", val: "negative", int: 4, fam: "sadness", desc: "Pensive, introspective sadness; a reflective heaviness without acute pain.", moves: ["Sit with it", "Create something", "Journal"] },
+            { id: "e46", name: "Loneliness", val: "negative", int: 6, fam: "sadness", desc: "Ache of disconnection and hunger to be truly seen and valued.", moves: ["Distinguish isolation from worthlessness", "Reach out", "Build connection slowly"] },
+            { id: "e47", name: "Disappointment", val: "negative", int: 4, fam: "sadness", desc: "Muted sadness when reality falls short of hopes.", moves: ["Acknowledge the wish", "Grieve it mildly", "Update expectations"] },
+            { id: "e48", name: "Despair", val: "negative", int: 9, fam: "sadness", desc: "Hopeless conviction that suffering will continue and cannot change.", moves: ["Reach out for help", "Name one small hope", "Get professional support"] },
+            { id: "e49", name: "Emptiness", val: "negative", int: 7, fam: "sadness", desc: "Hollow sense of meaninglessness and void; feeling drained or depleted.", moves: ["Rest and restore", "Reconnect with meaning", "Seek connection"] },
+            { id: "e50", name: "Disgust", val: "negative", int: 7, fam: "disgust", desc: "Revulsion and recoil from something perceived as corrupt or wrong.", moves: ["Honor your standards", "Separate person from behavior", "Set clear boundaries"] },
+            { id: "e51", name: "Repulsion", val: "negative", int: 7, fam: "disgust", desc: "Physical and emotional recoil; strong aversion at sensory or conceptual level.", moves: ["Remove yourself if needed", "Process reaction", "Understand your values"] },
+            { id: "e52", name: "Surprise", val: "mixed", int: 6, fam: "surprise", desc: "Sudden disruption of expectation; moment of not knowing before knowing.", moves: ["Let it settle", "Integrate new information", "Adjust understanding"] },
+            { id: "e53", name: "Amazement", val: "positive", int: 8, fam: "surprise", desc: "Delighted astonishment at something wonderful or nearly impossible.", moves: ["Let wonder reshape you", "Express appreciation", "Share with others"] },
+            { id: "e54", name: "Shock", val: "negative", int: 9, fam: "surprise", desc: "Frozen disbelief at something sudden, terrible, or incomprehensible.", moves: ["Feel the freeze", "Ground in senses", "Seek support"] },
+            { id: "e55", name: "Confusion", val: "negative", int: 5, fam: "surprise", desc: "Unsettled state when information doesn't yet fit your mental map.", moves: ["Gather more data", "Ask questions", "Release urgency to know"] },
+            { id: "e56", name: "Anticipation", val: "positive", int: 6, fam: "anticipation", desc: "Forward-looking readiness and expectation; eager waiting for something.", moves: ["Build and prepare", "Savor the wait", "Stay present"] },
+            { id: "e57", name: "Desire", val: "mixed", int: 7, fam: "anticipation", desc: "Wanting; pulled toward something you believe will bring satisfaction.", moves: ["Name it clearly", "Check motivation", "Take aligned action"] },
+            { id: "e58", name: "Longing", val: "mixed", int: 6, fam: "anticipation", desc: "Deep yearning for something or someone, often mixed with poignancy.", moves: ["Honor the longing", "Work toward it if possible", "Grieve if lost"] },
+            { id: "e59", name: "Nostalgia", val: "mixed", int: 5, fam: "anticipation", desc: "Bittersweet longing for the past; remembering with affection and sadness.", moves: ["Honor the memory", "Appreciate what was", "Live in the present"] },
+            { id: "e60", name: "Jealousy", val: "negative", int: 7, fam: "anticipation", desc: "Protective fear of losing someone or something valuable to another.", moves: ["Name the need beneath it", "Communicate vulnerability", "Strengthen bond"] },
+            { id: "e61", name: "Envy", val: "negative", int: 6, fam: "anticipation", desc: "Painful awareness that someone has what you desire for yourself.", moves: ["Let it point to your desire", "Transform into inspiration", "Take action"] },
+            { id: "e62", name: "Guilt", val: "negative", int: 6, fam: "moral", desc: "Unease about something you did that conflicts with your values.", moves: ["Distinguish guilt from shame", "Make amends", "Change behavior"] },
+            { id: "e63", name: "Shame", val: "negative", int: 9, fam: "moral", desc: "Crushing sense that you are fundamentally flawed or unworthy.", moves: ["Bring it into compassionate relationship", "Challenge global judgment", "Seek support"] },
+            { id: "e64", name: "Regret", val: "negative", int: 5, fam: "moral", desc: "Sorrow and wish to undo something you said or did.", moves: ["Acknowledge fully", "Make amends if possible", "Extract learning"] },
+            { id: "e65", name: "Remorse", val: "negative", int: 7, fam: "moral", desc: "Deep sorrow and desire to repair harm; active remorse with action.", moves: ["Apologize meaningfully", "Change behavior", "Repair impact"] },
+            { id: "e66", name: "Forgiveness", val: "positive", int: 8, fam: "moral", desc: "Release of resentment and grudge; choosing to move forward without bitterness.", moves: ["Feel it as choice, not demand", "Release when ready", "Protect boundaries still"] },
+            { id: "e67", name: "Humility", val: "positive", int: 6, fam: "moral", desc: "Grounded recognition of your limitations and equal worth to others.", moves: ["Acknowledge limitations", "Seek to learn", "Stay open"] },
+            { id: "e68", name: "Compassion", val: "positive", int: 7, fam: "other", desc: "Felt understanding of another's suffering combined with desire to help.", moves: ["Hold space for their pain", "Offer what's helpful", "Know your limits"] },
+            { id: "e69", name: "Empathy", val: "positive", int: 7, fam: "other", desc: "Felt understanding of another's inner world while staying connected to your own center.", moves: ["Mirror back what you sense", "Set boundaries if you start to merge"] },
+            { id: "e70", name: "Boredom", val: "negative", int: 3, fam: "other", desc: "Restless flatness when activity lacks engagement, novelty, or meaning.", moves: ["Identify what's needed: rest? novelty? meaning?", "Engage differently"] },
+            { id: "e71", name: "Numbness", val: "negative", int: 3, fam: "other", desc: "Emotional flatness; absence of feeling in response to events.", moves: ["Allow it to process", "Gentle reconnection", "Seek support if chronic"] },
+            { id: "e72", name: "Determination", val: "positive", int: 8, fam: "other", desc: "Firm commitment to achieving a goal; resolute focus and energy.", moves: ["Clarify the goal", "Build momentum", "Celebrate progress"] },
+            { id: "e73", name: "Ambition", val: "positive", int: 8, fam: "other", desc: "Driving desire to achieve, succeed, or reach higher levels.", moves: ["Define success", "Break into steps", "Balance with rest"] },
+            { id: "e74", name: "Motivation", val: "positive", int: 6, fam: "other", desc: "Internal drive and energy toward action or goal pursuit.", moves: ["Understand your 'why'", "Build momentum", "Sustain through challenges"] },
+            { id: "e75", name: "Peacefulness", val: "positive", int: 5, fam: "other", desc: "Serene, undisturbed state; inner quietude and harmony.", moves: ["Protect this state", "Anchor daily", "Share it"] }
+        ];
+
+        // ========== SENSES DATA (331 items with descriptions) ==========
+        const SENSES = {
+            think: {
+                name: "How We Think", count: 71, items: [
+                    { n: "Balance (Equilibrioception)", d: "Your vestibular sense of physical equilibrium and spatial orientation in three-dimensional space." },
+                    { n: "Body Awareness (Proprioception)", d: "Your internal kinesthetic map of where your body is in space without visual input." },
+                    { n: "Hunger", d: "The physiological signal indicating caloric and nutrient deficit, mediated by hormones like ghrelin and leptin." },
+                    { n: "Interoception", d: "Your foundational sense of internal body conditions—heartbeat, breathing patterns, gut feelings, organ sensations." },
+                    { n: "Pain (Nociception)", d: "Your body's protective warning system detecting tissue damage or threat through nociceptors." },
+                    { n: "Pleasure", d: "The positive sensation of comfort, satisfaction, and reward activation through dopamine and endorphins." },
+                    { n: "Sight (Visual)", d: "Your dominant sense for perceiving electromagnetic radiation in the visible spectrum, processed through 30% of your cortex." },
+                    { n: "Smell (Olfactory)", d: "Your chemical sense detecting airborne volatile compounds, directly connected to the limbic system." },
+                    { n: "Sound (Auditory)", d: "Your sense of mechanical vibrations in air or water, processing frequency, volume, duration, and direction." },
+                    { n: "Taste (Gustatory)", d: "Your chemical sense of dissolved compounds in food—sweet, salty, sour, bitter, umami." },
+                    { n: "Temperature (Thermoception)", d: "Your sense of thermal conditions on skin and internally through separate warm and cold receptors." },
+                    { n: "Thirst", d: "Your body's signal to restore fluid balance and electrolytes, regulated by osmolarity and blood volume." },
+                    { n: "Touch (Kinesthetic)", d: "Your sense of tactile sensation including pressure, vibration, texture, and light touch." },
+                    { n: "Vibrations (Mechanoreception)", d: "Your sensitivity to rapid oscillations and vibrations at various frequencies." },
+                    { n: "Change (Movement)", d: "Your perception of transformation and transition across time and space." },
+                    { n: "History", d: "Your sense of past events, causation over time, and how previous experiences shape current reality." },
+                    { n: "Proximity", d: "Your awareness of distance and closeness—both physical and emotional." },
+                    { n: "Relationships", d: "Your sense of connection and interdependence between entities." },
+                    { n: "Season", d: "Your sense of cyclical time and natural rhythms affecting light, temperature, and psychology." },
+                    { n: "Status", d: "Your awareness of rank, position, hierarchy, and social standing." },
+                    { n: "Territory", d: "Your sense of claimed or belonging space at multiple scales: personal, home, workplace." },
+                    { n: "Time", d: "Your perception of duration, sequencing, and temporal flow—past, present, and future." },
+                    { n: "Analysis", d: "Your ability to decompose complex wholes into component parts and examine relationships." },
+                    { n: "Awareness", d: "Your capacity for consciousness, attention, and noticing—making all other cognition possible." },
+                    { n: "Cause and Effect", d: "Your sense of causality—how actions lead to consequences in chains." },
+                    { n: "Discernment", d: "Your ability to notice contradictions, inconsistencies, and competing truths." },
+                    { n: "Integration", d: "Your ability to synthesize disparate parts into coherent wholes." },
+                    { n: "Interpretation", d: "Your ability to convert information from one form to another across contexts." },
+                    { n: "Language", d: "Your sense of symbolic communication, grammar, semantics, and meaning-making through words." },
+                    { n: "Math", d: "Your sense of quantity, relationships, patterns, ratios, and abstract numerical thinking." },
+                    { n: "Narrative", d: "Your sense of story structure, meaning-making through narrative, and emotional arcs." },
+                    { n: "Pattern Recognition", d: "Your ability to identify recurring structures, similarities, and predictable sequences." },
+                    { n: "Intuition", d: "Your immediate knowing without logical reasoning—rapid pattern matching beyond conscious awareness." },
+                    { n: "Instinct", d: "Your innate, automatic responses to situations—pre-cognitive wisdom from evolution." },
+                    { n: "Authenticity Detection", d: "Your ability to sense when someone is being real versus performing." },
+                    { n: "Timing", d: "Your sense of when things should happen—rhythm, tempo, and optimal moments for action." }
+                ]
+            },
+            decide: {
+                name: "How We Decide", count: 55, items: [
+                    { n: "Abundance vs Scarcity", d: "Whether you perceive resources, opportunities, and possibilities as plentiful or limited." },
+                    { n: "Certainty vs Uncertainty", d: "Your tolerance for known vs unknown. Drives need for control and planning." },
+                    { n: "Chaos vs Order", d: "Your perception of randomness vs structure. Preference for predictability." },
+                    { n: "Optimism vs Pessimism", d: "Your default assumption about future outcomes. Glass half-full orientation." },
+                    { n: "Safety vs Danger", d: "Your perception of threat level and security. How risk awareness shapes choices." },
+                    { n: "Fixed vs Growth Mindset", d: "Whether you believe abilities are innate or can be developed through effort." },
+                    { n: "Nature vs Nurture", d: "Whether outcomes come from inherent/genetic factors or environmental/learned ones." },
+                    { n: "Objectivity vs Subjectivity", d: "Whether you lean toward observable facts or personal perspectives." },
+                    { n: "Realism vs Idealism", d: "Whether you focus on what is or what could/should be." },
+                    { n: "Collectivism vs Individualism", d: "Whether you prioritize group harmony or personal autonomy." },
+                    { n: "Introversion vs Extroversion", d: "Whether you draw energy from solitude or social engagement." },
+                    { n: "Logic vs Emotion", d: "Whether you prioritize rational analysis or feeling and intuition." },
+                    { n: "Giving vs Receiving", d: "Whether you're more comfortable offering or accepting." },
+                    { n: "Proactive vs Reactive", d: "Whether you initiate or respond to circumstances." },
+                    { n: "Courage vs Fear", d: "Whether you face challenges with boldness or hesitation." },
+                    { n: "Morality", d: "Your sense of right and wrong. Ethical framework and values foundation." }
+                ]
+            },
+            act: {
+                name: "How We Act", count: 205, items: [
+                    { n: "Creativity", d: "Your capacity to generate novel ideas, combine existing elements in new ways, and imagine possibilities." },
+                    { n: "Curiosity", d: "Your drive to explore, ask questions, and understand. Desire for knowledge and discovery." },
+                    { n: "Wisdom", d: "Your capacity for good judgment, seeing the bigger picture, and applying knowledge with discernment." },
+                    { n: "Compassion", d: "Your ability to feel empathy and be moved to help those suffering." },
+                    { n: "Forgiveness", d: "Your ability to release resentment and restore relationships after harm." },
+                    { n: "Gratitude", d: "Your ability to recognize and appreciate what you've received." },
+                    { n: "Love", d: "Your capacity for deep affection, care, and commitment to others." },
+                    { n: "Loyalty", d: "Your steadfast commitment to people, groups, or principles." },
+                    { n: "Ambition", d: "Your drive for achievement, success, and reaching higher goals." },
+                    { n: "Determination", d: "Your persistence in pursuing goals despite obstacles." },
+                    { n: "Energy", d: "Your vitality, activation level, and capacity for action." },
+                    { n: "Passion", d: "Your intense, driving enthusiasm and deep commitment to what matters." },
+                    { n: "Authenticity", d: "Your capacity to be genuine and true to yourself." },
+                    { n: "Integrity", d: "Your adherence to moral and ethical principles." },
+                    { n: "Discipline", d: "Your ability to maintain focus and follow through on commitments." },
+                    { n: "Patience", d: "Your capacity to wait calmly and persist through delays." },
+                    { n: "Resilience", d: "Your ability to recover quickly from difficulties." },
+                    { n: "Flexibility", d: "Your capacity to adapt to changing circumstances." },
+                    { n: "Focus", d: "Your ability to concentrate attention and maintain it." },
+                    { n: "Mindfulness", d: "Your capacity to be present and aware in the moment." },
+                    { n: "Leadership", d: "Your ability to guide, inspire, and influence others." },
+                    { n: "Communication", d: "Your skill in expressing ideas and understanding others." },
+                    { n: "Empathy", d: "Your ability to understand and share the feelings of others." },
+                    { n: "Collaboration", d: "Your capacity to work effectively with others toward shared goals." }
+                ]
+            }
+        };
+
+        // ========== MASTER INDEX ==========
+        let allItems = [];
+        let state = { view: 'dashboard', filter: null, completed: JSON.parse(localStorage.getItem('os_done') || '{}') };
+
+        // Build index from loaded data
+        function buildIndex() {
+            allItems = [];
+
+            // Checklists (from parsed data file)
+            if (typeof CHECKLISTS !== 'undefined') {
+                CHECKLISTS.forEach(c => {
+                    allItems.push({
+                        id: c.id,
+                        cat: 'checklist',
+                        name: c.name,
+                        desc: c.desc,
+                        file: c.file,
+                        tags: c.tags || [],
+                        items: c.items || [],
+                        searchText: `${c.name} ${c.desc} ${(c.tags || []).join(' ')} ${(c.items || []).map(i => i.task).join(' ')}`.toLowerCase()
+                    });
+                });
+            }
+
+            // Formulations
+            if (typeof FORMULATIONS !== 'undefined') {
+                FORMULATIONS.forEach(f => {
+                    const recipeTasks = (f.recipes || []).flatMap(r =>
+                        (r.ingredients || []).map(ing => ({ section: r.name, task: ing }))
+                    );
+                    allItems.push({
+                        id: f.id,
+                        cat: 'formulation',
+                        name: f.name,
+                        file: f.file,
+                        tags: f.tags || [],
+                        recipes: f.recipes || [],
+                        items: recipeTasks,
+                        searchText: `${f.name} ${(f.tags || []).join(' ')} ${(f.recipes || []).map(r => r.name + ' ' + (r.ingredients || []).join(' ')).join(' ')}`.toLowerCase()
+                    });
+                });
+            }
+
+            // Beliefs
+            if (typeof BELIEFS !== 'undefined') {
+                BELIEFS.forEach(b => {
+                    const sectionTasks = (b.sections || []).flatMap(s =>
+                        (s.items || []).map(item => ({ section: s.title, task: item }))
+                    );
+                    allItems.push({
+                        id: b.id,
+                        cat: 'belief',
+                        name: b.name,
+                        desc: b.desc,
+                        file: b.file,
+                        tags: b.tags || [],
+                        sections: b.sections || [],
+                        items: sectionTasks,
+                        searchText: `${b.name} ${b.desc} ${(b.tags || []).join(' ')} ${(b.sections || []).flatMap(s => s.items || []).join(' ')}`.toLowerCase()
+                    });
+                });
+            }
+
+            // Collections (from Notion)
+            if (typeof COLLECTIONS !== 'undefined') {
+                COLLECTIONS.forEach(c => {
+                    allItems.push({
+                        id: `coll-${c.title}`,
+                        cat: 'collection',
+                        name: c.title,
+                        desc: c.desc,
+                        tags: [c.cat, 'notion', 'collection'],
+                        items: (c.items || []).map(item => ({ section: c.title, task: item })),
+                        searchText: `${c.title} ${c.cat} ${c.desc} ${(c.items || []).join(' ')}`.toLowerCase()
+                    });
+                });
+                if (document.getElementById('cColl')) document.getElementById('cColl').textContent = COLLECTIONS.length;
+            }
+
+            // Emotions
+            EMOTIONS.forEach(e => {
+                allItems.push({
+                    id: e.id,
+                    cat: 'emotion',
+                    name: e.name,
+                    desc: e.desc,
+                    val: e.val,
+                    int: e.int,
+                    fam: e.fam,
+                    tags: [e.fam, e.val, 'emotions'],
+                    items: (e.moves || []).map((m, i) => ({ section: 'Growth Moves', task: m })),
+                    searchText: `${e.name} ${e.desc} ${e.fam} ${e.val} ${(e.moves || []).join(' ')}`.toLowerCase()
+                });
+            });
+
+            // Senses
+            Object.entries(SENSES).forEach(([key, cat]) => {
+                (cat.items || []).forEach((s, i) => {
+                    allItems.push({
+                        id: `s${key}${i}`,
+                        cat: 'sense',
+                        name: s.n,
+                        desc: s.d,
+                        group: cat.name,
+                        tags: [key, 'consciousness', 'senses'],
+                        items: [{ section: cat.name, task: `Develop awareness of ${s.n}: ${s.d}` }],
+                        searchText: `${s.n} ${s.d} ${key} ${cat.name}`.toLowerCase()
+                    });
+                });
+            });
+
+            document.getElementById('cAll').textContent = allItems.length;
+            if (document.getElementById('cChklist')) document.getElementById('cChklist').textContent = allItems.filter(i => i.cat === 'checklist').length;
+            if (document.getElementById('cForm')) document.getElementById('cForm').textContent = allItems.filter(i => i.cat === 'formulation').length;
+            if (document.getElementById('cBelief')) document.getElementById('cBelief').textContent = allItems.filter(i => i.cat === 'belief').length;
+            if (document.getElementById('cEmot')) document.getElementById('cEmot').textContent = allItems.filter(i => i.cat === 'emotion').length;
+            if (document.getElementById('cSense')) document.getElementById('cSense').textContent = allItems.filter(i => i.cat === 'sense').length;
+            updateStats();
+        }
+
+        function getProgress(id) {
+            const done = state.completed[id] || [];
+            const item = allItems.find(x => x.id === id);
+            const total = (item?.items?.length) || 1;
+            return { done: done.length, total, pct: Math.round((done.length / total) * 100) };
+        }
+
+        function updateStats() {
+            const done = Object.values(state.completed).flat().length;
+            const total = allItems.reduce((s, i) => s + (i.items?.length || 1), 0);
+            document.getElementById('sTotal').textContent = allItems.length;
+            document.getElementById('sComplete').textContent = done;
+            document.getElementById('sPercent').textContent = Math.round((done / total) * 100) + '%';
+            document.getElementById('cProg').textContent = allItems.filter(i => {
+                const p = getProgress(i.id);
+                return p.done > 0 && p.pct < 100;
+            }).length;
+        }
+
+        function render() {
+            let items = [...allItems];
+            const v = state.view;
+
+            if (v === 'checklists') items = items.filter(i => i.cat === 'checklist');
+            else if (v === 'formulations') items = items.filter(i => i.cat === 'formulation');
+            else if (v === 'beliefs') items = items.filter(i => i.cat === 'belief');
+            else if (v === 'emotions') items = items.filter(i => i.cat === 'emotion');
+            else if (v === 'senses') items = items.filter(i => i.cat === 'sense');
+            else if (v === 'progress') items = items.filter(i => { const p = getProgress(i.id); return p.done > 0 && p.pct < 100; });
+            else if (v === 'collections') items = items.filter(i => i.cat === 'collection');
+            else if (v === 'wellness') items = items.filter(i => i.tags?.some(t => ['fitness', 'wellness', 'nutrition', 'energy', 'detox'].includes(t)));
+            else if (v === 'sustainability') items = items.filter(i => i.tags?.some(t => ['sustainability', 'community', 'travel'].includes(t)));
+            else if (v === 'mindset') items = items.filter(i => i.tags?.some(t => ['mindset', 'philosophy', 'relationships'].includes(t)) || i.cat === 'belief' || i.cat === 'emotion');
+            else if (v === 'business') items = items.filter(i => i.tags?.some(t => ['business', 'strategy', 'notes', 'articles'].includes(t)));
+
+            if (state.filter) items = items.filter(i => i.tags?.includes(state.filter));
+
+            const titles = { dashboard: 'All Items', checklists: 'Checklists', formulations: 'Formulations', beliefs: 'Foundational Beliefs', collections: 'Notion Collections', emotions: 'Emotions', senses: 'Sensory Dimensions', progress: 'In Progress', wellness: 'Wellness', sustainability: 'Sustainability', mindset: 'Mindset', business: 'Business & Strategy' };
+            document.getElementById('viewTitle').textContent = titles[v] || 'Items';
+            document.getElementById('viewCount').textContent = items.length + ' items';
+
+            const tags = [...new Set(items.flatMap(i => i.tags || []))].slice(0, 12);
+            document.getElementById('filters').innerHTML = `<button class="filter-btn ${!state.filter ? 'active' : ''}" onclick="setFilter(null)">All</button>` + tags.map(t => `<button class="filter-btn ${state.filter === t ? 'active' : ''}" onclick="setFilter('${t}')">${t}</button>`).join('');
+
+            document.getElementById('grid').innerHTML = items.slice(0, 80).map(i => {
+                const p = getProgress(i.id);
+                return `<div class="card" onclick="openItem('${i.id}')">
+            <div class="card-header"><div class="card-title">${i.name}</div><span class="card-cat cat-${i.cat}">${i.cat}</span></div>
+            ${i.desc ? `<div class="card-desc">${i.desc}</div>` : ''}
+            <div class="card-tags">${(i.tags || []).slice(0, 3).map(t => '#' + t).join(' ')}</div>
+            <div class="card-progress"><div class="card-progress-bar" style="width:${p.pct}%"></div></div>
+            <div class="card-meta"><span>${p.done}/${p.total} tasks</span><span>${p.pct}%</span></div>
+        </div>`;
+            }).join('') || '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">No items found</div>';
+        }
+
+        function setFilter(t) { state.filter = t; render(); }
+        function switchView(v) { state.view = v; state.filter = null; document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector(`.nav-item[data-view="${v}"]`)?.classList.add('active'); render(); }
+
+        function openItem(id) {
+            const item = allItems.find(i => i.id === id);
+            if (!item) return;
+            const p = getProgress(id);
+            const done = state.completed[id] || [];
+
+            let html = `<div style="margin-bottom:16px;">`;
+            if (item.desc) html += `<p style="color:var(--muted);margin-bottom:12px;line-height:1.5;">${item.desc}</p>`;
+            html += `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">${(item.tags || []).map(t => `<span style="background:rgba(59,130,246,0.2);color:#3b82f6;padding:2px 8px;border-radius:10px;font-size:0.7rem;">#${t}</span>`).join('')}</div>`;
+            if (item.file) html += `<p style="font-size:0.75rem;color:var(--muted);">📄 ${item.file}</p>`;
+            html += `<div style="margin:12px 0;"><strong>Progress:</strong> ${p.done}/${p.total} (${p.pct}%)</div>`;
+            html += `<div class="card-progress" style="height:6px;margin-bottom:16px;"><div class="card-progress-bar" style="width:${p.pct}%"></div></div></div>`;
+
+            // Render real tasks
+            if (item.items && item.items.length > 0) {
+                let currentSection = '';
+                html += `<ul class="checklist">`;
+                item.items.forEach((task, i) => {
+                    const checked = done.includes(i);
+                    if (task.section && task.section !== currentSection) {
+                        currentSection = task.section;
+                        html += `<li style="grid-column:1/-1;background:rgba(59,130,246,0.1);padding:8px 12px;margin:8px 0;border-radius:6px;font-weight:600;font-size:0.85rem;color:var(--accent);list-style:none;">${task.section}</li>`;
+                    }
+                    html += `<li class="checklist-item">
+                <div class="check-box ${checked ? 'checked' : ''}" onclick="toggle('${id}',${i})"></div>
+                <span class="check-text ${checked ? 'done' : ''}">${task.task}</span>
+            </li>`;
+                });
+                html += `</ul>`;
+            }
+
+            // Render recipes for formulations
+            if (item.recipes && item.recipes.length > 0) {
+                html += `<h3 style="margin:20px 0 12px;color:var(--purple);">📋 Recipes</h3>`;
+                item.recipes.forEach(r => {
+                    html += `<div class="recipe-card"><div class="recipe-title">${r.name}</div><div class="recipe-ing">${(r.ingredients || []).map(ing => `• ${ing}`).join('<br>')}</div></div>`;
+                });
+            }
+
+            document.getElementById('mTitle').textContent = item.name;
+            document.getElementById('mBody').innerHTML = html;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function toggle(id, idx) {
+            if (!state.completed[id]) state.completed[id] = [];
+            const i = state.completed[id].indexOf(idx);
+            if (i > -1) state.completed[id].splice(i, 1);
+            else state.completed[id].push(idx);
+            localStorage.setItem('os_done', JSON.stringify(state.completed));
+            openItem(id);
+            updateStats();
+            render();
+        }
+
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+        // Search with full-text across all content
+        document.getElementById('search').addEventListener('input', e => {
+            const term = e.target.value.toLowerCase().trim();
+            const sr = document.getElementById('searchResults');
+            if (term.length < 2) { sr.style.display = 'none'; return; }
+
+            const results = allItems.filter(i => i.searchText?.includes(term)).slice(0, 20);
+            if (results.length) {
+                sr.innerHTML = results.map(r => `<div class="search-result" onclick="openItem('${r.id}');document.getElementById('searchResults').style.display='none';">
+            <div class="sr-cat">${r.cat}</div>
+            <div class="sr-title">${r.name}</div>
+            ${r.desc ? `<div class="sr-desc">${r.desc.slice(0, 80)}...</div>` : ''}
+        </div>`).join('');
+                sr.style.display = 'block';
+            } else sr.style.display = 'none';
+        });
+
+        document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => switchView(n.dataset.view)));
+        document.getElementById('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+        // Initialize
+        buildIndex();
+        render();
+    </script>
+</body>
+
+</html>
